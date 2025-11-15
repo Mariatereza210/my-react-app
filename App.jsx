@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const sampleCards = [
   {
     id: 1,
@@ -57,6 +57,40 @@ const sampleCards = [
 ];
 
 export default function App() {
+  const [searchTitleText, setSearchTitleText] = useState("");
+  const [searchDescriptionText, setSearchDescriptionText] = useState("");
+
+  useEffect(()=>{
+    console.log("empty dependency list effect called");
+  },[] );
+
+  useEffect(() => {
+    console.log(" title effect called:", searchTitleText);
+  }, [searchTitleText]);
+
+  useEffect(() => {
+    console.log(" description effect called:", searchDescriptionText);
+  }, [searchDescriptionText]);
+
+  useEffect(() => {
+    console.log(
+      "common effect called:",
+       searchTitleText,
+       searchDescriptionText
+      );
+  });
+  
+
+  const handleSearchTitleInputChange = (event) => {
+    setSearchTitleText(event.target.value);
+  };
+
+   const handleSearchDescriptionInputChange = (event) => {
+    setSearchDescriptionText(event.target.value);
+  };
+  
+
+
   return (
     <>
       <div className="top-bar">
@@ -64,7 +98,21 @@ export default function App() {
       </div>
 
       <div className="container">
-        <h3 className="subtitle">Explore</h3>
+        <h3 className="text">Explore</h3>
+        <input className="input" 
+        type="search" 
+        placeholder="Search Cards by title..." 
+        value={searchTitleText} 
+        onChange={handleSearchTitleInputChange}
+        />
+
+        <input className="input" 
+        type="search" 
+        placeholder="Search Cards by description..." 
+        value={searchDescriptionText} 
+        onChange={handleSearchDescriptionInputChange}
+        />
+        
         <div className="grid">
           {sampleCards.map((card) => (
             <div key={card.id} className="card">
@@ -87,4 +135,3 @@ export default function App() {
     </>
   );
 }
-
