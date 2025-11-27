@@ -130,3 +130,22 @@ body {
 .open:hover {
   background: #1e40af;
 }
+
+.header-row {
+  display: flex;
+  justify-content: space-between;  
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.sort-select {
+  padding: 8px 12px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: white;
+  cursor: pointer;
+}
+.sort-select:hover {
+  background: #f3f4f6;
+}
