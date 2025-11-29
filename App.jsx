@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 const sampleCards = [
   { id: 1,
@@ -45,9 +46,37 @@ const sampleCards = [
   },
 ];
 
+function Modal({ isOpen, onClose, children }) {
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}>
+      <div style={{
+        background: 'white',
+        padding: '20px',
+        borderRadius: '8px'
+      }}>
+        {children}
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 export default function App() {
   const [likedCards, setLikedCards] = useState([]);
   const [sortValue, setSortValue] = useState("default");
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null); 
+  const [cards, setCards] = useState(sampleCards); 
 
   const toggleLike = (id) => {
     setLikedCards((prev) =>
@@ -55,15 +84,27 @@ export default function App() {
     );
   };
 
+  const openDeleteModal = (card) => { 
+    setSelectedCard(card);
+    setIsOpen(true);
+  };
+
+  const handleDelete = () => {
+    setCards((prev) => prev.filter((c) => c.id !== selectedCard.id));
+    setLikedCards((prev) => prev.filter((id) => id !== selectedCard.id));
+    setIsOpen(false);
+    setSelectedCard(null);
+  };
+
   const totalPrice = likedCards
-    .map((id) => sampleCards.find((c) => c.id === id)?.price || 0)
+    .map((id) => cards.find((c) => c.id === id)?.price || 0)
     .reduce((a, b) => a + b, 0);
 
-  const sortedCards = [...sampleCards].sort((a, b) => {
+  const sortedCards = [...cards].sort((a, b) => {
     if (sortValue === "low") return a.price - b.price;
     if (sortValue === "high") return b.price - a.price;
     if (sortValue === "az") return a.title.localeCompare(b.title);
-    return 0; 
+    return 0;
   });
 
   return (
@@ -75,9 +116,7 @@ export default function App() {
       <div className="container">
         <h3 className="text">Explore</h3>
 
-        <select
-          onChange={(e) => setSortValue(e.target.value)}
-        >
+        <select onChange={(e) => setSortValue(e.target.value)}>
           <option value="default">Sort by...</option>
           <option value="low">Price: Low → High</option>
           <option value="high">Price: High → Low</option>
@@ -108,8 +147,11 @@ export default function App() {
                 >
                   {likedCards.includes(card.id) ? "★ Liked" : "♡ Like"}
                 </button>
-
-                <button className="open">Open</button>
+                
+                <button className="Edit">Edit</button>
+                <button className="Delete" onClick={() => openDeleteModal(card)}>
+                  Delete
+                </button>
               </div>
             </div>
           ))}
@@ -119,6 +161,12 @@ export default function App() {
           Liked cards total price is - {totalPrice}$
         </h3>
       </div>
+
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <h2>Delete {selectedCard?.title}?</h2>
+        <p>This card will be permanently removed.</p>
+        <button onClick={handleDelete}>Yes</button>
+      </Modal>
     </>
   );
 }

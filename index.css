@@ -98,8 +98,8 @@ body {
 
 .card-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  /* justify-content: space-between;
+  align-items: center; */
   border-top: 1px solid #eee;
   padding: 10px 15px;
 }
@@ -122,13 +122,20 @@ body {
   background: #e5e7eb;
 }
 
-.open {
+.Edit {
   background: #2563eb;
   color: white;
+  margin-left: 120px;
+  margin-right: 5px;
 }
 
 .open:hover {
   background: #1e40af;
+}
+
+.Delete {
+  background-color: rgb(228, 45, 45);
+  color: white;
 }
 
 .header-row {
