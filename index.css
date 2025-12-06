@@ -128,8 +128,6 @@ body {
   color: white;
 }
 
-/* ===== MODAL ===== */
-
 .modal-overlay {
   position: fixed;
   inset: 0;
